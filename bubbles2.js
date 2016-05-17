@@ -54,14 +54,22 @@
       .data(data);
 
     nodes.enter().append("circle")
-      .attr("class", "node")
+      .attr("class", function(d){return "node "+d.name.replace(" ","")})
       .attr("cx", function (d) {return d.x; })
       .attr("cy", function (d) { return d.y; })
       .attr("r", function (d) { return d.radius; })
       .style("fill", function (d) {
           return nightlightColors[d.group]; })
-      .on("mouseover", function (d) { showPopover.call(this, d); })
-      .on("mouseout", function (d) { removePopovers(); })
+      .on("mouseover", function (d) { 
+          var selector = d3.select(this).attr("class").split(" ")[1]
+          console.log(selector)
+          d3.selectAll(".node").attr("opacity",.1)
+          
+          d3.selectAll("."+selector).attr("opacity",1)
+          showPopover.call(this, d); })
+      .on("mouseout", function (d) { 
+          d3.selectAll(".node").attr("opacity",1)
+          removePopovers(); })
 
     var force = d3.layout.force();
 
