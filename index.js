@@ -4,17 +4,17 @@ $(function() {
 //		.defer(d3.json,"data/boston_buildings.geojson")
 		.await(dataDidLoad);
 })
-var width = 1200,
-    height = 1200,
-    padding = 0, // separation between same-color nodes
-    clusterPadding = 40, // separation between different-color nodes
-    maxRadius = 60;
-    minRadius = 20;
+var width = 400,
+    height = 300,
+    padding = 1, // separation between same-color nodes
+    clusterPadding = 10, // separation between different-color nodes
+    maxRadius = 40;
+    minRadius = 15;
 $("#topDifferences .hideTop").hide()
 
 function dataDidLoad(error,data) {
 //make 1 svg for everything
-    initiateBubbles(data)
+    groupData(data)
 //    drawBuildings(buildings,mapSvg)
 //    drawDots(dots,mapSvg)
 }
@@ -29,10 +29,93 @@ var nightlightColors = {
     "8":"#deebf6",
     "9":"#9ec3e4",
 }
+var utils = {
+	range: function(start, end) {
+		var data = []
+
+		for (var i = start; i < end; i++) {
+			data.push(i)
+		}
+
+		return data
+	}
+}
+
+var table = {
+	group: function(rows, fields) {
+		var view = {}
+		var pointer = null
+
+		for(var i in rows) {
+			var row = rows[i]
+
+			pointer = view
+			for(var j = 0; j < fields.length; j++) {
+				var field = fields[j]
+
+				if(!pointer[row[field]]) {
+					if(j == fields.length - 1) {
+						pointer[row[field]] = []
+					} else {
+						pointer[row[field]] = {}
+					}
+				}
+
+				pointer = pointer[row[field]]
+			}
+
+			pointer.push(row)
+		}
+
+		return view
+	},
+
+	maxCount: function(view) {
+		var largestName = null
+		var largestCount = null
+
+		for(var i in view) {
+			var list = view[i]
+
+			if(!largestName) {
+				largestName = i
+				largestCount = list.length
+			} else {
+				if(list.length > largestCount) {
+					largestName = i
+					largestCount = list.length
+				}
+			}
+		}
+
+		return {
+			name: largestName,
+			count: largestCount
+		}
+	},
+
+	filter: function(view, callback) {
+		var data = []
+
+		for(var i in view) {
+			var list = view[i]
+			if(callback(list, i)) {
+				data = data.concat(list)
+			}
+		}
+
+		return data
+	}
+}
+
+function groupData(data){
+    var groupedData = table.group(data,["group"])
+    initiateBubbles(data)
+
+}
 function initiateBubbles(data){
-    console.log(data)
+   // console.log(data)
     m = d3.max(data, function(d){return d.group});
-    console.log(m)
      //create teh color categories
     color = d3.scale.category10().domain(d3.range(m));
      //make teh clusters array each cluster for each group
@@ -53,7 +136,10 @@ function initiateBubbles(data){
        return dta;
      });
      //after mapping use that t make the graph
-     makeGraph(dataset);
+    var groupedData = table.group(dataset,["cluster"])
+     for(var g in groupedData){
+         makeGraph(groupedData[g]);
+     }
 }
 function makeGraph(nodes) {
   var force = d3.layout.force()
@@ -118,8 +204,8 @@ function tick(e) {
   // Move d to be adjacent to the cluster node.
 function cluster(alpha) {
     return function(d) {
-      var cluster = clusters[d.cluster];
-      if (cluster === d) return;
+      var cluster = clusters[d.cluster]
+        if (cluster === d) return;
       var x = d.x - cluster.x,
         y = d.y - cluster.y,
         l = Math.sqrt(x * x + y * y),
