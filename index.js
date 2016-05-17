@@ -6,10 +6,10 @@ $(function() {
 })
 var width = 1200,
     height = 1200,
-    padding = 1.5, // separation between same-color nodes
-    clusterPadding = 6, // separation between different-color nodes
+    padding = 0, // separation between same-color nodes
+    clusterPadding = 40, // separation between different-color nodes
     maxRadius = 60;
-    minRadius = 15;
+    minRadius = 20;
 $("#topDifferences .hideTop").hide()
 
 function dataDidLoad(error,data) {
