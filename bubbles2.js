@@ -77,15 +77,37 @@
       labels(centers)
       force.start();
       if(varname == "name"){
-          d3.selectAll("circle").transition().duration(1000).style("fill",function(d){
-             return nightlightColors[d.group]; })
+          d3.selectAll("circle")
+          .transition().duration(1000)
+          .style("fill",function(d){return nightlightColors[d.group]; })
+          .attr("r",function(d){return parseFloat(d.value)/3})
+          .attr("opacity",1)
+          d3.selectAll(".axis").remove()
+          
       }
-      else{
-          d3.selectAll("circle").transition().duration(1000).style("fill",function(d){
-              return cityNameColors[d.name]})
-              
-      }
-      
+      else if(varname =="group"){
+          d3.selectAll("circle")
+          .transition().duration(1000)
+          .style("fill",function(d){ return cityNameColors[d.name]})
+          .attr("r",function(d){return parseFloat(d.value)/3})
+          .attr("opacity",1)
+          d3.selectAll(".axis").remove()
+          
+      }else if(varname =="type"){
+          var GMPScale = d3.scale.linear().domain([0,1377989]).range([800,0])
+          var popChangeScale = d3.scale.linear().domain([-155946,1792786]).range([800,0])
+          var density2010Scale = d3.scale.linear().domain([0,31250]).range([0,40])
+          d3.select("#map svg").append("text").text("population change").attr("x",800).attr("y",900).attr("fill","#fff").attr("class","axis")
+          d3.select("#map svg").append("text").text("GMP").attr("x",30).attr("y",50).attr("fill","#fff").attr("class","axis")
+          d3.selectAll("circle")
+          .transition().duration(1000)
+          .style("fill",function(d){return cityNameColors[d.name]})
+          .attr("cy",function(d,i){return GMPScale(d.gmp)})
+          .attr("cx",function(d,i){return popChangeScale(d.popChange)})
+          .attr("r",function(d,i){return density2010Scale(d.density)})
+          .attr("opacity",.3)
+          force.stop();
+    }
     }
 
     function tick (centers, varname) {
