@@ -11,7 +11,18 @@
           "8":"#9ecae1",
           "9":"#3182bd",
       }
-
+      var cityNameColors = {
+"San Jose":"#ccd29f",
+"Orlando":"#68a0c5",
+"Milwaukee":"#cad848",
+"Washington":"#567e69",
+"Denver":"#72db5b",
+"Chicago":"#d07b38",
+"Pittsburg":"#72d8b9",
+"Portland":"#cea946",
+"Las Vegas":"#609745",
+"Los Angeles":"#8c723d"
+      }
     var width = 1000, height = 1000;
     var fill = d3.scale.ordinal().range(['#827d92','#827354','#523536','#72856a','#2a3285','#383435'])
     var svg = d3.select("#map").append("svg")
@@ -47,7 +58,8 @@
       .attr("cx", function (d) {return d.x; })
       .attr("cy", function (d) { return d.y; })
       .attr("r", function (d) { return d.radius; })
-      .style("fill", function (d) {return nightlightColors[d.group]; })
+      .style("fill", function (d) {
+          return nightlightColors[d.group]; })
       .on("mouseover", function (d) { showPopover.call(this, d); })
       .on("mouseout", function (d) { removePopovers(); })
 
@@ -64,6 +76,16 @@
       force.on("tick", tick(centers, varname));
       labels(centers)
       force.start();
+      if(varname == "name"){
+          d3.selectAll("circle").transition().duration(1000).style("fill",function(d){
+             return nightlightColors[d.group]; })
+      }
+      else{
+          d3.selectAll("circle").transition().duration(1000).style("fill",function(d){
+              return cityNameColors[d.name]})
+              
+      }
+      
     }
 
     function tick (centers, varname) {
