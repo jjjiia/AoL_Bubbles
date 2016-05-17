@@ -10,6 +10,8 @@
 	<script src="static/javascripts/d3.tip.v0.6.3.js"></script>
   <script src="static/javascripts/queue.v1.min.js"></script>
 	<script src="static/javascripts/jquery-ui.min.js"></script>
+	<script src="static/underscore.js"></script>
+	<script src="static/bootstrap.js"></script>
 	<link rel="stylesheet" href="static/stylesheets/jquery-ui.css" />
 	<link rel="stylesheet" href="static/bootstrap-3.1.1-dist/css/bootstrap.min.css">
 	<script src="static/javascripts/jquery-ui.min.js"></script>
@@ -21,12 +23,22 @@
 
 <body>
   <div id = "title">Bubbles</div>
+  <div class="row">
+       <div class="btn-group" data-toggle="buttons">
+         <label class="btn btn-primary" id="name">
+           <input type="radio" name="options">City
+         </label>
+         <label class="btn btn-primary" id="group">
+           <input type="radio" name="options"> Group
+         </label>
+       </div>
+     </div>
 <div id = "map"></div>
 <div id = "chart"></div>
 <script type="text/javascript" charset="utf-8">
 </script>
 	
-<script src="index.js"></script>
+<script src="bubbles2.js"></script>
 	
 </body>
 </html>

@@ -1,7 +1,7 @@
 html, body{
     font-family:"Helvetica";
     color:#fff;
-    background-color:#fff;
+    background-color:#000;
 }
 
 #title{
@@ -9,11 +9,27 @@ html, body{
     font-size:18px;
 }
 #map{
-    position:relative;
-    float:top;
-    font-size:12px;
+    position:absolute;
+    top:80px;
+    font-size:24px;
     width:1200px;
+}
+.row{
+    position:absolute;
+    top:10px;
+    left:30px;
 }
 .d3-tip{
  color:#000;
+}
+.btn{
+    background-color:#000 !important;
+    color:#fff !important;
+    border:none !important;
+    font-size:40px;
+}
+.label{
+    font-size:25px;
+    color:#fff;
+    fill:#fff;
 }
