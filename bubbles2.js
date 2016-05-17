@@ -23,6 +23,19 @@
 "Las Vegas":"#609745",
 "Los Angeles":"#8c723d"
       }
+      
+      var cityTypeColors = {
+"San Jose":"#f5955e",
+"Orlando":"#e9c057",
+"Milwaukee":"#61d89a",
+"Washington":"#e3587b",
+"Denver":"#e3587b",
+"Chicago":"#20c0e2",
+"Pittsburg":"#61d89a",
+"Portland":"#f5955e",
+"Las Vegas":"#e9c057",
+"Los Angeles":"#20c0e2"
+      }
     var width = 1000, height = 1000;
     var fill = d3.scale.ordinal().range(['#827d92','#827354','#523536','#72856a','#2a3285','#383435'])
     var svg = d3.select("#map").append("svg")
@@ -129,7 +142,7 @@
           .transition()
           .duration(500)
           .delay(function(d,i){return i*5})
-          .style("fill",function(d){return cityNameColors[d.name]})
+          .style("fill",function(d){return cityTypeColors[d.name]})
           .attr("cy",function(d,i){return GMPScale(d.gmp)})
           .attr("cx",function(d,i){return popChangeScale(d.popChange)})
           .attr("r",function(d,i){return density2010Scale(d.density)})
