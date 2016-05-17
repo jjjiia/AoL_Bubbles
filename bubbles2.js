@@ -34,21 +34,27 @@
       data[j].x = Math.random() * width;
       data[j].y = Math.random() * height;
     }
-    console.log(data)
     var padding = 2;
     var maxRadius = d3.max(_.pluck(data, 'radius'));
-
+    
+    
+    
     var getCenters = function (vname, size) {
       var centers, map;
-      centers = _.uniq(_.pluck(data, vname)).map(function (d) {
+      
+      var sortedData = data.sort(function(a,b){return parseInt(b.gridorder)-parseInt(a.gridorder)})
+      centers = _.uniq(_.pluck(sortedData, vname)).map(function (d) {
           return {name: d, value: 1};
       });
-
       map = d3.layout.treemap().size(size).ratio(1/1);
       map.nodes({children: centers});
-
       return centers;
     };
+
+    var groupCenters = getCenters("group",[1000,1000])
+    for(var i in groupCenters){
+        console.log([groupCenters[i].name,groupCenters[i].x,groupCenters[i].y])
+    }
 
     var nodes = svg.selectAll("circle")
       .data(data);
@@ -62,13 +68,11 @@
           return nightlightColors[d.group]; })
       .on("mouseover", function (d) { 
           var selector = d3.select(this).attr("class").split(" ")[1]
-          console.log(selector)
-          d3.selectAll(".node").attr("opacity",.1)
-          
-          d3.selectAll("."+selector).attr("opacity",1)
+          d3.selectAll(".node").transition().duration(1000).attr("opacity",.1)          
+          d3.selectAll("."+selector).transition().duration(1000).attr("opacity",1)
           showPopover.call(this, d); })
       .on("mouseout", function (d) { 
-          d3.selectAll(".node").attr("opacity",1)
+          d3.selectAll(".node").transition().duration(1000).attr("opacity",1)
           removePopovers(); })
 
     var force = d3.layout.force();
@@ -81,6 +85,19 @@
 
     function draw (varname) {
       var centers = getCenters(varname, [1000, 1000]);
+      console.log(centers)
+    //  var groupCenters = []
+    //  var gridSize = 200
+    //  for(var i = 1; i < 10; i++){
+    //      var entry ={
+    //          name:String(i),
+    //          x:i%3*gridSize,
+    //          y:Math.floor((i-1)/3)*gridSize
+    //      }
+    //      entry["parent"]={area:1000000}
+    //      groupCenters.push(entry)
+    //  }       
+      
       force.on("tick", tick(centers, varname));
       labels(centers)
       force.start();
@@ -122,7 +139,11 @@
     }
 
     function tick (centers, varname) {
+        
+         
       var foci = {};
+
+      console.log(centers)
       for (var i = 0; i < centers.length; i++) {
         foci[centers[i].name] = centers[i];
       }
