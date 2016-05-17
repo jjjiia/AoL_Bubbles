@@ -5,11 +5,11 @@ $(function() {
 		.await(dataDidLoad);
 })
 var width = 400,
-    height = 300,
+    height = 400,
     padding = 1, // separation between same-color nodes
-    clusterPadding = 10, // separation between different-color nodes
-    maxRadius = 40;
-    minRadius = 15;
+    clusterPadding = 0, // separation between different-color nodes
+    maxRadius = 50;
+    minRadius = 20;
 $("#topDifferences .hideTop").hide()
 
 function dataDidLoad(error,data) {
@@ -19,15 +19,15 @@ function dataDidLoad(error,data) {
 //    drawDots(dots,mapSvg)
 }
 var nightlightColors = {
-    "1":"#fef1cf",
-    "2":"#fee4a0",
-    "3":"#fdd673",
-    "4":"#fccccd",
-    "5":"#fa999b",
-    "6":"#f97d82",
-    "7":"#deebf6",
-    "8":"#deebf6",
-    "9":"#9ec3e4",
+    "1":"#fff7bc",
+    "2":"#fee391",
+    "3":"#fec44f",
+    "4":"#fee0d2",
+    "5":"#fc9272",
+    "6":"#de2d26",
+    "7":"#deebf7",
+    "8":"#9ecae1",
+    "9":"#3182bd",
 }
 var utils = {
 	range: function(start, end) {
@@ -128,6 +128,7 @@ function initiateBubbles(data){
          cluster: d.group,//group
          name: d.city,//label
          radius: r,//radius
+         value: d.value,//radius
          x: Math.cos(d.group / m * 2 * Math.PI) * 100 + width / 2 + Math.random(),
          y: Math.sin(d.group / m * 2 * Math.PI) * 100 + height / 2 + Math.random()
        };
@@ -145,14 +146,20 @@ function makeGraph(nodes) {
   var force = d3.layout.force()
     .nodes(nodes)
     .size([width, height])
-    .gravity(.02)
+    .gravity(.1)
     .charge(0)
     .on("tick", tick)
     .start();
 
+var tip = d3.tip()
+    .attr("class","d3-tip")
+    .offset([10,10])
+    .attr("opacity",1)
+
   var svg = d3.select("#map").append("svg")
     .attr("width", width)
     .attr("height", height);
+    svg.call(tip)
 
   var node = svg.selectAll("circle")
     .data(nodes)
@@ -169,7 +176,15 @@ function makeGraph(nodes) {
     .transition()
     .delay(function(d,i){return i*10})
     .duration(1000)
-    .attr("opacity",1)
+    .attr("opacity",.7)
+    node
+    .on("mouseover",function(d){
+        tip.html(d.value)
+        tip.show()
+    })
+    .on("mouseout",function(){
+        tip.hide()
+    })
     
     //add text to the group    
   node.append("text")
@@ -198,9 +213,7 @@ function tick(e) {
         var k = "translate(" + d.x + "," + d.y + ")";
         return k;
       })
-
-  }
-
+}
   // Move d to be adjacent to the cluster node.
 function cluster(alpha) {
     return function(d) {
@@ -218,8 +231,7 @@ function cluster(alpha) {
         cluster.y += y;
       }
     };
-  }
-
+}
   // Resolves collisions between d and all other circles.
 function collide(alpha) {
     var quadtree = d3.geom.quadtree(nodes);
@@ -246,7 +258,7 @@ function collide(alpha) {
         return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
       });
     };
-  }
+}
 }
 function drawBuildings(geoData,svg){
     //need to generalize projection into global var later

@@ -12,4 +12,8 @@ html, body{
     position:relative;
     float:top;
     font-size:12px;
+    width:1200px;
+}
+.d3-tip{
+ color:#000;
 }
