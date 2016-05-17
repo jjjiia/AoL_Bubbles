@@ -1,0 +1,14 @@
+html, body{
+    font-family:"Helvetica";
+    color:#fff;
+    background-color:#000;
+}
+
+#title{
+    padding:20px;
+    font-size:18px;
+}
+#map{
+    position:relative;
+    float:top;
+}
