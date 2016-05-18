@@ -68,7 +68,11 @@
     for(var i in groupCenters){
         console.log([groupCenters[i].name,groupCenters[i].x,groupCenters[i].y])
     }
-
+var tip = d3.tip()
+    .attr("class","d3-tip")
+    .offset([20,10])
+    
+    svg.call(tip)    
     var nodes = svg.selectAll("circle")
       .data(data);
 
@@ -83,10 +87,17 @@
           var selector = d3.select(this).attr("class").split(" ")[1]
           d3.selectAll(".node").transition().duration(1000).attr("opacity",.1)          
           d3.selectAll("."+selector).transition().duration(1000).attr("opacity",1)
-          showPopover.call(this, d); })
+          console.log(d)
+          tip.html(d.name+" </br> GMP:"+d.gmp+"</br> Population Change:"+d.popChange+"</br> Denisty:"+d.density)
+          tip.show()
+      //    showPopover.call(this, d); 
+      })
       .on("mouseout", function (d) { 
           d3.selectAll(".node").transition().duration(1000).attr("opacity",1)
-          removePopovers(); })
+          tip.hide()
+          
+      //    removePopovers(); 
+      })
 
     var force = d3.layout.force();
 
