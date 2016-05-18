@@ -1,5 +1,3 @@
-  d3.csv('tempdata.csv', function (error, data) {
-
       var nightlightColors = {
           "1":"#fff7bc",
           "2":"#fee391",
@@ -36,6 +34,62 @@
 "Las Vegas":"#e9c057",
 "Los Angeles":"#20c0e2"
       }
+      var typeColors={
+"large slow growth (chicago,Los angeles)":"#20c0e2",
+"rustbelt declining (pittsburgh,milwaukee)":"#61d89a",
+"growth magnets (las vegas,orlando)":"#e9c057",
+"large faster growth (washington,denver)":"#e3587b",
+"quality of life (portland,san jose)":"#f5955e"
+      }
+      
+      var groupToWords = {
+          "1":"Low Income, Low Intensity",
+          "2":"Low Income, Medium Intensity",
+          "3":"Low Income, High Intensity",
+          "4":"Medium Income, Low Intensity",
+          "5":"Medium Income, Medium Intensity",
+          "6":"Medium Income, High Intensity",
+          "7":"High Income, Low Intensity",
+          "8":"High Income, Medium Intensity",
+          "9":"High Income, High Intensity"
+      }
+      function drawKey(keyData){
+          var keyArray = []
+          for(var i in keyData){
+              keyArray.push({"color":keyData[i],"key":i})
+          }
+          var height = keyArray.length*30+30
+          var keySvg=d3.select("#key").append("svg").attr("width",400).attr("height",height)
+          keySvg.selectAll("rect")
+          .data(keyArray)
+          .enter()
+          .append("rect")
+          .attr("x",10)
+          .attr("y",function(d,i){return i*30+10})
+          .attr("width",20)
+          .attr("height",20)
+          .attr("fill",function(d){return d.color})
+          
+          keySvg.selectAll("text")
+          .data(keyArray)
+          .enter()
+          .append("text")
+          .attr("x",40)
+          .attr("y",function(d,i){return i*30+25})
+          .text(function(d){
+              var keys = Object.keys(groupToWords)
+              if(keys.indexOf(d.key)>-1){
+                  return groupToWords[d.key]
+              }
+              return d.key})
+          .attr("fill",function(d){return d.color})
+      }    
+  drawKey(nightlightColors)  
+ drawKey(cityNameColors)  
+ drawKey(typeColors)
+  d3.csv('tempdata.csv', function (error, data) {
+
+      
     var width = 1000, height = 1000;
     var fill = d3.scale.ordinal().range(['#827d92','#827354','#523536','#72856a','#2a3285','#383435'])
     var svg = d3.select("#map").append("svg")

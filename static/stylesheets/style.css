@@ -8,6 +8,7 @@ html, body{
     padding:20px;
     font-size:18px;
 }
+#key{position:absolute;right:20px;top:20px;padding:20px;width:400px;height:400px;}
 #map{
     position:absolute;
     top:80px;
